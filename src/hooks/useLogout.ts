@@ -8,8 +8,7 @@ const useLogout = () => {
 		setAuth(null);
 
 		try {
-			const response = await axios('/logout');
-			console.log(response);
+			await axios('/logout');
 		} catch (err) {
 			console.error(err);
 		}

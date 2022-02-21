@@ -18,7 +18,6 @@ const Users: React.FC = () => {
         const response = await axiosPrivate.get('/users', {
           signal: controller.signal
         });
-        console.log(response.data);
         isMounted && setUsers(response.data);
       } catch (error) {
         console.error(error);

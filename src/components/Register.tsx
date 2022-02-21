@@ -55,13 +55,11 @@ const Register: React.FC = () => {
     }
 
     try {
-      const response = await axios.post(
+      await axios.post(
         REGISTER_URL,
         JSON.stringify({ username, password })
       );
 
-      console.log(response.data);
-      console.log(JSON.stringify(response));
       setSuccess(true);
       // clear input fields
     } catch (error: any) {
