@@ -16,12 +16,12 @@ const Login: React.FC = () => {
   const location = useLocation();
   const from = (location.state as LocationState)?.from?.pathname || "/";
 
-  const { setAuth } = useAuth();
+  const { setAuth, persist, setPersist } = useAuth();
   const userRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLParagraphElement | null>(null);
 
-  const [user, setUser] = useState('');
-  const [pwd, setPwd] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [errMsg, setErrMsg] = useState('');
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     setErrMsg('');
-  }, [user, pwd]);
+  }, [username, password]);
 
   const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
@@ -38,13 +38,13 @@ const Login: React.FC = () => {
     try {
       const response = await axios.post(
         LOGIN_URL,
-        JSON.stringify({ username: user, password: pwd })
+        JSON.stringify({ username, password })
       );
-      setUser('');
-      setPwd('');
+      setUsername('');
+      setPassword('');
       setAuth({
-        user,
-        pwd,
+        username,
+        password,
         accessToken: response?.data?.accessToken,
         roles: response?.data?.roles
       });
@@ -62,6 +62,14 @@ const Login: React.FC = () => {
       errRef?.current?.focus();
     }
   };
+
+  const togglePersist = (): void => {
+    setPersist(!persist);
+  };
+
+  useEffect(() => {
+    localStorage.setItem('persist', JSON.stringify(persist));
+  }, [persist]);
 
   return (
     <section>
@@ -81,8 +89,8 @@ const Login: React.FC = () => {
           id="username"
           ref={userRef}
           autoComplete='off'
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setUser(e.target.value)}
-          value={user}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+          value={username}
           required
         />
 
@@ -90,12 +98,21 @@ const Login: React.FC = () => {
         <input
           type="password"
           id="password"
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setPwd(e.target.value)}
-          value={pwd}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+          value={password}
           required
         />
 
         <button>Sign In</button>
+        <div className="persistCheck">
+          <input
+            type="checkbox"
+            id="persist"
+            onChange={togglePersist}
+            checked={persist}
+          />
+          <label htmlFor="persist">Trust this Device</label>
+        </div>
       </form>
       <p>
         Need an Account?<br />

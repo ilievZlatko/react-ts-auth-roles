@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 
 const Layout: React.FC = () => {
   return (
-    <main className="App">
+    <main data-testid="App" className="App">
       <Outlet />
     </main>
   );

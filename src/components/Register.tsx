@@ -12,11 +12,11 @@ const Register: React.FC = () => {
   const userRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLParagraphElement | null>(null);
 
-  const [user, setUser] = useState('');
+  const [username, setUsername] = useState('');
   const [validName, setValidName] = useState(false);
   const [userFocus, setUserFocus] = useState(false);
 
-  const [pwd, setPwd] = useState('');
+  const [password, setPassword] = useState('');
   const [validPwd, setValidPwd] = useState(false);
   const [pwdFocus, setPwdFocus] = useState(false);
 
@@ -32,23 +32,23 @@ const Register: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setValidName(USER_REGEX.test(user));
-  }, [user]);
+    setValidName(USER_REGEX.test(username));
+  }, [username]);
 
   useEffect(() => {
-    setValidPwd(PWD_REGEX.test(pwd));
-    setValidMatch(pwd === matchPwd);
-  }, [pwd, matchPwd]);
+    setValidPwd(PWD_REGEX.test(password));
+    setValidMatch(password === matchPwd);
+  }, [password, matchPwd]);
 
   useEffect(() => {
     setErrMsg('');
-  }, [user, pwd, matchPwd]);
+  }, [username, password, matchPwd]);
 
   const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
 
-    const v1 = USER_REGEX.test(user);
-    const v2 = PWD_REGEX.test(pwd);
+    const v1 = USER_REGEX.test(username);
+    const v2 = PWD_REGEX.test(password);
     if (!v1 || !v2) {
       setErrMsg('invalid Entry');
       return;
@@ -57,7 +57,7 @@ const Register: React.FC = () => {
     try {
       const response = await axios.post(
         REGISTER_URL,
-        JSON.stringify({ username: user, password: pwd })
+        JSON.stringify({ username, password })
       );
 
       console.log(response.data);
@@ -94,22 +94,22 @@ const Register: React.FC = () => {
             <label htmlFor="username">
               Username:
               <FontAwesomeIcon icon={faCheck} className={validName ? "valid" : "hide"} />
-              <FontAwesomeIcon icon={faTimes} className={validName || !user ? "hide" : "invalid"} />
+              <FontAwesomeIcon icon={faTimes} className={validName || !username ? "hide" : "invalid"} />
             </label>
             <input
               type="text"
               id="username"
               ref={userRef}
               autoComplete="off"
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setUser(e.target.value)}
-              value={user}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+              value={username}
               required
               aria-invalid={validName ? "false" : "true"}
               aria-describedby="uidnote"
               onFocus={() => setUserFocus(true)}
               onBlur={() => setUserFocus(false)}
             />
-            <p id="uidnote" className={userFocus && user && !validName ? "instructions" : "offscreen"}>
+            <p id="uidnote" className={userFocus && username && !validName ? "instructions" : "offscreen"}>
               <FontAwesomeIcon icon={faInfoCircle} />
               4 to 24 characters.<br />
               Must begin with a letter.<br />
@@ -120,13 +120,13 @@ const Register: React.FC = () => {
             <label htmlFor="password">
               Password:
               <FontAwesomeIcon icon={faCheck} className={validPwd ? "valid" : "hide"} />
-              <FontAwesomeIcon icon={faTimes} className={validPwd || !pwd ? "hide" : "invalid"} />
+              <FontAwesomeIcon icon={faTimes} className={validPwd || !password ? "hide" : "invalid"} />
             </label>
             <input
               type="password"
               id="password"
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setPwd(e.target.value)}
-              value={pwd}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+              value={password}
               required
               aria-invalid={validPwd ? "false" : "true"}
               aria-describedby="pwdnote"

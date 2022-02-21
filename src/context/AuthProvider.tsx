@@ -1,36 +1,31 @@
 import { createContext, useState } from 'react';
-
-interface IAuth {
-  user: string;
-  pwd: string;
-  accessToken: string;
-  roles: number[];
-}
+import { User } from '../types';
 
 export interface AuthProps {
-  auth: IAuth;
-  setAuth: React.Dispatch<IAuth>;
+  persist: boolean;
+  auth: User | null;
+  setAuth: (state: User | null) => void;
+  setPersist: (state: boolean) => void;
 }
 
-const defaultAuthValue: IAuth = {
-  user: '',
-  pwd: '',
-  accessToken: '',
-  roles: []
-};
+const defaultAuthValue: User | null = null;
 
 const defaultValue: AuthProps = {
+  persist: false,
   auth: defaultAuthValue,
-  setAuth: (state: IAuth) => {}
+  setAuth: (state: User | null) => {},
+  setPersist: (state: boolean) => {}
 };
 
 const AuthContext = createContext(defaultValue);
 
 export const AuthProvider: React.FC = ({ children }) => {
-  const [auth, setAuth] = useState<IAuth>(defaultAuthValue);
+  const persistItem = localStorage.getItem('persist');
+  const [auth, setAuth] = useState<User | null>(defaultAuthValue);
+  const [persist, setPersist] = useState<boolean>(persistItem ? JSON.parse(persistItem) : false);
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth }}>
+    <AuthContext.Provider value={{ auth, setAuth, persist, setPersist }}>
       {children}
     </AuthContext.Provider>
   );
